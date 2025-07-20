@@ -49,8 +49,12 @@ io.on('connection', (socket) => {
   // Event: 'join-room' - Adds a user to a specified room
   socket.on('join-room', ({ roomId }) => {
     if (!rooms[roomId]) {
-      // If room does not exist, notify the client
       socket.emit('room-not-found');
+      return;
+    }
+    // Only allow two users per room
+    if (rooms[roomId].length >= 2) {
+      socket.emit('room-full');
       return;
     }
 
